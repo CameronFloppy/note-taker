@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const { notes } = require('../../db/notes.json');
-const fs = require('fs');
 const path = require('path');
+const { notes } = require('../../data/notes.json');
+const fs = require('fs');
+
 
 
 function createNewNote(body, notesArray) {
@@ -9,23 +10,13 @@ function createNewNote(body, notesArray) {
     
     notesArray.push(note);
     fs.writeFileSync(
-        path.join(__dirname, '../../db/notes.json'),
+        path.join(__dirname, '../../data/notes.json'),
         JSON.stringify({ notes: notesArray }, null, 2)
     )
 
     return note
 }
 
-function removeById(id, notesArray) {
-
-    const result = notesArray.filter(note => note.id === id)[0];
-    fs.writeFileSync(
-        path.join(__dirname, '../../db/notes.json'),
-        JSON.stringify({ notes: result }, null, 2)
-    )
-
-    return result;
-}
 
 router.get('/notes', (req, res) => {
     res.json(notes);
@@ -38,9 +29,5 @@ router.post('/notes', (req, res) => {
     res.json(note)
 })
 
-router.delete('/notes/:id', (req, res) => {
-    const id = req.params.id.toString()
-    removeById(id, notes)
-})
 
 module.exports = router;
